@@ -7,8 +7,6 @@ const ctx = new AudioContext();
 const reader1 = new FileReader();
 const distortion = ctx.createWaveShaper();
 const filter = ctx.createBiquadFilter();
-distortion.connect(filter);
-filter.connect(ctx.destination);
 
 let currentBuffer;
 let bufferLength;
@@ -21,16 +19,13 @@ const midiCCRange = 128;
 const midiIncrement = (distortionRange / midiCCRange).toFixed(0);
 let midiToFX = 5000;
 
-let n = 0;
-
 let safariAgent = navigator.userAgent.indexOf("Safari") > -1;
 let chromeAgent = navigator.userAgent.indexOf("Chrome") > -1;
 
 export default function App() {
   const [uploadedAudio, setUploadedAudio] = useState(null);
   const [bufferReady, setBufferReady] = useState(false);
-  const [distortionAmount, setDistortionAmount] = useState(5000);
-  const [filterFreq, setFilterFreq] = useState(5000);
+  const [fXAmount, setFXAmount] = useState(5000);
 
   const [midiCC, setMidiCC] = useState(0);
   const [midiValue, setMidiValue] = useState(0);
@@ -38,15 +33,19 @@ export default function App() {
   const [midiDeviceName, setMidiDeviceName] = useState("");
 
   const [toggle, setToggle] = useState(false);
+  const [toggleFilter, setToggleFilter] = useState(true);
   const [isVisible, setIsVisible] = useState(false);
 
+  const [n, setN] = useState(0);
+
   const handleModal = () => setIsVisible(true);
-  const handleClick = (e) => (n = e.target.value);
+  const handleClick = (e) => setN(e.target.value);
+  const handleFilterClick = () => setToggleFilter((prev) => (prev = !prev));
 
   const distortionTypes = [
     {
       id: "dust",
-      curve: makeDistortionCurve(curveClamp(distortionAmount - 80, 200, 20)),
+      curve: makeDistortionCurve(curveClamp(fXAmount - 80, 200, 20)),
       oversample: "none",
       lowrange: 20,
       highrange: 200,
@@ -54,7 +53,7 @@ export default function App() {
     },
     {
       id: "dirt",
-      curve: makeDistortionCurve(curveClamp(distortionAmount, 750, 100)),
+      curve: makeDistortionCurve(curveClamp(fXAmount, 750, 100)),
       oversample: "2x",
       lowrange: 100,
       highrange: 750,
@@ -62,9 +61,7 @@ export default function App() {
     },
     {
       id: "death",
-      curve: makeDistortionCurve(
-        curveClamp(distortionAmount + 900, 10000, 1000)
-      ),
+      curve: makeDistortionCurve(curveClamp(fXAmount + 900, 10000, 1000)),
       oversample: "2x",
       lowrange: 1000,
       highrange: 10000,
@@ -73,7 +70,7 @@ export default function App() {
   ];
 
   filter.type = distortionTypes[n].filterType;
-  filter.frequency.value = filterFreq;
+  filter.frequency.value = fXAmount;
   distortion.curve = distortionTypes[n].curve;
   distortion.oversample = distortionTypes[n].oversample;
 
@@ -129,6 +126,22 @@ export default function App() {
       bufferLength = Number(soundSource.buffer.duration.toFixed(0) * 1000);
     }
   }, [toggle]);
+
+  // TOGGLE FILTER
+  useEffect(() => {
+    if (toggleFilter) {
+      if (distortion.connect(ctx.destination)) {
+        distortion.disconnect(ctx.destination);
+      }
+      distortion.connect(filter);
+      filter.connect(ctx.destination);
+    }
+
+    if (!toggleFilter) {
+      filter.disconnect(ctx.destination);
+      distortion.connect(ctx.destination);
+    }
+  }, [toggleFilter]);
 
   // MIDI ACCESS
   useEffect(() => {
@@ -266,7 +279,7 @@ export default function App() {
             <div className="plugin-control-bar-L">
               <fieldset>
                 <legend>Mode {">>"}</legend>
-                <div title="Light Distortion">
+                <div title="Overdrive" style={{ marginBottom: "5px" }}>
                   <input
                     type="radio"
                     id="lp"
@@ -276,14 +289,9 @@ export default function App() {
                     defaultChecked
                   />
                   <label htmlFor="lp">Dust</label>
-                  {/* <div className="filter-icon-wrapper">
-                    <img
-                      src="icon/filter-lowpass.svg"
-                      className="filter-icons"
-                    />
-                  </div> */}
+                  <img src="icon/dust.svg" className="mode-icons" />
                 </div>
-                <div title="Mid Distortion">
+                <div title="Crunch" style={{ marginBottom: "5px" }}>
                   <input
                     type="radio"
                     id="hp"
@@ -292,14 +300,9 @@ export default function App() {
                     onClick={handleClick}
                   />
                   <label htmlFor="hp">Dirt</label>
-                  {/* <div className="filter-icon-wrapper">
-                    <img
-                      src="icon/filter-lowpass.svg"
-                      className="filter-icons flip-hztl"
-                    />
-                  </div> */}
+                  <img src="icon/dirt.svg" className="mode-icons" />
                 </div>
-                <div title="Heavy Distortion">
+                <div title="Shred">
                   <input
                     type="radio"
                     id="bp"
@@ -308,67 +311,88 @@ export default function App() {
                     onClick={handleClick}
                   />
                   <label htmlFor="bp">Death</label>
-                  {/* <div className="filter-icon-wrapper">
-                    <img
-                      src="icon/filter-notch.svg"
-                      className="filter-icons flip-vrtl"
-                    />
-                  </div> */}
+                  <img
+                    src="icon/death.svg"
+                    className="mode-icons"
+                    style={{ marginLeft: "20px" }}
+                  />
                 </div>
               </fieldset>
             </div>
-            <div className="plugin-control-bar-R">
-              <div id="play-btn">
-                <img
-                  src="icon/play-solid.svg"
-                  alt="Play"
-                  title="Play"
-                  id="play-1"
-                  className="plugin-control-buttons"
-                  onClick={playSample}
-                  tabIndex={0}
-                  onKeyDown={controlBarKeyDown}
-                />
+            <div className="control-bar-R-wrapper">
+              <div className="plugin-control-bar-R">
+                <div id="play-btn">
+                  <img
+                    src="icon/play-solid.svg"
+                    alt="Play"
+                    title="Play"
+                    id="play-1"
+                    className="plugin-control-buttons"
+                    onClick={playSample}
+                    tabIndex={0}
+                    onKeyDown={controlBarKeyDown}
+                  />
+                </div>
+                <div id="stop-btn">
+                  <img
+                    src="icon/stop-solid.svg"
+                    alt="Stop"
+                    title="Stop"
+                    id="stop-1"
+                    className="plugin-control-buttons"
+                    onClick={stopSample}
+                    tabIndex={0}
+                    onKeyDown={controlBarKeyDown}
+                  />
+                </div>
+                <div id="loop-btn">
+                  <img
+                    src="icon/repeat-solid.svg"
+                    alt="Loop"
+                    title="Loop"
+                    id="loop-1"
+                    className="plugin-control-buttons"
+                    onClick={loopSample}
+                    tabIndex={0}
+                    onKeyDown={controlBarKeyDown}
+                  />
+                </div>
               </div>
-              <div id="stop-btn">
-                <img
-                  src="icon/stop-solid.svg"
-                  alt="Stop"
-                  title="Stop"
-                  id="stop-1"
-                  className="plugin-control-buttons"
-                  onClick={stopSample}
-                  tabIndex={0}
-                  onKeyDown={controlBarKeyDown}
-                />
-              </div>
-              <div id="loop-btn">
-                <img
-                  src="icon/repeat-solid.svg"
-                  alt="Loop"
-                  title="Loop"
-                  id="loop-1"
-                  className="plugin-control-buttons"
-                  onClick={loopSample}
-                  tabIndex={0}
-                  onKeyDown={controlBarKeyDown}
-                />
+              <div className="control-bar-filter">
+                {"@"} Filter{" "}
+                <a
+                  onClick={handleFilterClick}
+                  style={{
+                    color: !toggleFilter && "gray",
+                    filter: !toggleFilter && "none",
+                  }}
+                >
+                  On
+                </a>
+                {" | "}
+                <a
+                  onClick={handleFilterClick}
+                  style={{
+                    color: toggleFilter && "gray",
+                    filter: toggleFilter && "none",
+                  }}
+                >
+                  Off
+                </a>
               </div>
             </div>
           </div>
         </div>
-        <Knob
-          setDistortionAmount={setDistortionAmount}
-          midiToFX={midiToFX}
-          distortionTypes={distortionTypes}
-          setFilterFreq={setFilterFreq}
-          index={n}
-        />
+        <Knob setFXAmount={setFXAmount} midiToFX={midiToFX} />
       </div>
       <div className="copyright-and-links">
         <p style={{ marginLeft: "9px" }}>MIT 2024 © Mark Maxwell</p>
         <div>
-          <a href="https://github.com/mark-mxwl" target="_blank">
+          <a
+            href="https://github.com/mark-mxwl"
+            target="_blank"
+            style={{ filter: "none" }}
+          >
             <img
               src="icon/github.svg"
               alt="GitHub"
@@ -376,7 +400,11 @@ export default function App() {
               className="link-icons"
             />
           </a>
-          <a href="https://markmaxwelldev.com" target="_blank">
+          <a
+            href="https://markmaxwelldev.com"
+            target="_blank"
+            style={{ filter: "none" }}
+          >
             <img
               src="icon/M_nav_icon_1.svg"
               alt="Website"

@@ -1,13 +1,7 @@
 import { useRef, useState, useEffect } from "react";
 
 export default function Knob(props) {
-  const {
-    setDistortionAmount,
-    setFilterFreq,
-    midiToFX,
-    distortionTypes,
-    index,
-  } = props;
+  const { setFXAmount, midiToFX } = props;
 
   const componentIsMounted = useRef(false);
 
@@ -33,8 +27,7 @@ export default function Knob(props) {
   useEffect(() => {
     if (midiToFX) {
       distance = distClamp(midiToFX - 5000, 5000, -4900);
-      setDistortionAmount(distance + 5000);
-      setFilterFreq(distance + 5000);
+      setFXAmount(distance + 5000);
       knobRef.current.style.transform = "rotate(" + distance / 32 + "deg)";
       currentValueRef.current = distance + 5000;
     }
@@ -43,8 +36,7 @@ export default function Knob(props) {
   useEffect(() => {
     if (keyInput) {
       distance = distClamp(keyInput - 5000, 5000, -4900);
-      setDistortionAmount(distance + 5000);
-      setFilterFreq(distance + 5000);
+      setFXAmount(distance + 5000);
       knobRef.current.style.transform = "rotate(" + distance / 32 + "deg)";
       currentValueRef.current = distance + 5000;
     }
@@ -95,36 +87,27 @@ export default function Knob(props) {
         distance = distClamp((center - e.pageY) * 38, 5000, -4900);
         knobRef.current.style.transform = "rotate(" + distance / 32 + "deg)";
         currentValueRef.current = distance + 5000;
-        setDistortionAmount(distance + 5000);
-        setFilterFreq(distance + 5000);
+        setFXAmount(distance + 5000);
       }
     });
 
     knobRef.current.addEventListener("dblclick", (e) => {
       knobRef.current.style.transform = "rotate(0deg)";
       currentValueRef.current = 5000;
-      setDistortionAmount(5000);
-      setFilterFreq(5000);
+      setFXAmount(5000);
       setKeyInput("");
     });
 
-    currentValueRef.current.addEventListener("dblclick", (e) => {
-      knobRef.current.style.transform = "rotate(0deg)";
-      currentValueRef.current = 5000;
-      setDistortionAmount(5000);
-      setFilterFreq(5000);
-      setKeyInput("");
-    });
-
-    currentValueRef.current.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
-        knobRef.current.style.transform = "rotate(0deg)";
-        currentValueRef.current = 5000;
-        setDistortionAmount(5000);
-        setFilterFreq(5000);
-        setKeyInput("");
-      }
-    });
+    ["dblclick", "keydown"].forEach((e) =>
+      currentValueRef.current.addEventListener(e, (e) => {
+        if (e.key === "Enter" || e.type === "dblclick") {
+          knobRef.current.style.transform = "rotate(0deg)";
+          currentValueRef.current = 5000;
+          setFXAmount(5000);
+          setKeyInput("");
+        }
+      })
+    );
   }
 
   return (
@@ -151,7 +134,6 @@ export default function Knob(props) {
           onKeyDown={handleKeyInput}
         >
           <div className="wavefont-cv">{currentValueRef.current}</div>
-          {/* {keyInput ? `${distClamp(keyInput, 10000, 100)}` : 5000} */}
         </div>
       </div>
     </>

@@ -22,11 +22,17 @@ h2 {
   line-height: 1.3em;
 }
 
+a {
+  color: #A8D64D;
+  filter: drop-shadow(0 0 5px rgba(202, 240, 125, .6));
+  cursor: pointer;
+}
+
 fieldset {
   border: 1px solid #242424;
   border-radius: 10px;
   width: 100px;
-  height: 86px;
+  height: 80px;
   padding-right: 5px;
   text-align: left;
   line-height: 1.4em;
@@ -36,6 +42,7 @@ fieldset {
 input[type=radio] {
   appearance: none;
   padding: 5px;
+  /* margin-bottom: 5px; */
   background-color: rgb(205, 205, 205);
   border-radius:50%;
   margin-right: 8px;
@@ -50,24 +57,11 @@ label {
   cursor: pointer;
 }
 
-.filter-icon-wrapper {
-  display: inline-block;
-  text-align: right;
-  width: 30px;
-}
-.filter-icons {
-  width: 15px;
-  height: 15px;
-}
-.flip-hztl {
-  -webkit-transform: scaleX(-1);
-  transform: scaleX(-1);
-  margin-right: 5px;
-}
-.flip-vrtl {
-  -webkit-transform: scaleY(-1);
-  transform: scaleY(-1);
-  margin-right: 5px;
+.mode-icons {
+  width: 20px;
+  height: 20px;
+  margin-bottom: -5px;
+  margin-left: 25px;
 }
 
 .modal-container {
@@ -193,11 +187,24 @@ label {
   color: #242424;
 }
 
+.plugin-control-bar-R-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
 .plugin-control-bar-R {
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
   width: 150px;
+}
+
+.control-bar-filter {
+  font-family: "Bungee", sans-serif;
+  font-size: 13px;
+  color: #242424;
+  text-align: left;
+  margin: 15px 0 0 13px;
 }
 
 .plugin-control-buttons {
@@ -265,7 +272,7 @@ label {
 }
 
 .label-l {
-  left: -40%;
+  left: -35%;
 }
 
 .label-r {
@@ -289,7 +296,7 @@ label {
   margin: auto;
   text-align: center;
   user-select: none;
-  padding: 5px;
+  padding: 0 5px 5px 5px;
   background-color: #242424;
   color: rgba(255, 255, 255, 0.9);
   font: 2rem Inconsolata, monospace;
@@ -304,5 +311,6 @@ label {
   font-variation-settings:
     "ROND" 100,
     "YELA" -100;
-  letter-spacing: .5em;
+  letter-spacing: .6em;
+  filter: drop-shadow(10px 0 0 rgba(165, 165, 165, .4))
 }

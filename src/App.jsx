@@ -1,7 +1,9 @@
+import React from 'react'
 import { useState, useEffect } from "react";
 import Knob from "./components/Knob.jsx";
 import DragDrop from "./components/DragDrop.jsx";
 import InfoModal from "./components/InfoModal.jsx";
+import "./index.css"
 
 const ctx = new AudioContext();
 const reader1 = new FileReader();

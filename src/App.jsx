@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import Knob from "./components/Knob.jsx";
 import DragDrop from "./components/DragDrop.jsx";
 import InfoModal from "./components/InfoModal.jsx";
-import "./index.css"
+import "./App.css"
 
 const ctx = new AudioContext();
 const reader1 = new FileReader();
@@ -225,10 +225,10 @@ export default function App() {
       <div className="midi-and-accessibility">
         <div
           className="midi"
-          style={{ border: !useMidi && "1px solid rgba(165, 165, 165, 0)" }}
+          style={{ border: !useMidi && "1px solid rgba(0, 0, 0, 0)" }}
         >
           <img
-            src="icon/midi-port.svg"
+            src="icons/midi-port.svg"
             className="link-icons"
             alt="MIDI"
             title="MIDI"
@@ -256,7 +256,7 @@ export default function App() {
           </p>
         </div>
         <img
-          src="icon/universal-access-solid.svg"
+          src="icons/universal-access-solid.svg"
           alt="Universal Access"
           title="Universal Access"
           className="link-icons"
@@ -291,7 +291,7 @@ export default function App() {
                     defaultChecked
                   />
                   <label htmlFor="lp">Dust</label>
-                  <img src="icon/dust.svg" className="mode-icons" />
+                  <img src="icons/dust.svg" className="mode-icons" />
                 </div>
                 <div title="Crunch" style={{ marginBottom: "5px" }}>
                   <input
@@ -302,7 +302,7 @@ export default function App() {
                     onClick={handleClick}
                   />
                   <label htmlFor="hp">Dirt</label>
-                  <img src="icon/dirt.svg" className="mode-icons" />
+                  <img src="icons/dirt.svg" className="mode-icons" />
                 </div>
                 <div title="Shred">
                   <input
@@ -314,9 +314,9 @@ export default function App() {
                   />
                   <label htmlFor="bp">Death</label>
                   <img
-                    src="icon/death.svg"
+                    src="icons/death.svg"
                     className="mode-icons"
-                    style={{ marginLeft: "20px" }}
+                    style={{ marginLeft: "5px" }}
                   />
                 </div>
               </fieldset>
@@ -325,7 +325,7 @@ export default function App() {
               <div className="plugin-control-bar-R">
                 <div id="play-btn">
                   <img
-                    src="icon/play-solid.svg"
+                    src="icons/play-solid.svg"
                     alt="Play"
                     title="Play"
                     id="play-1"
@@ -337,7 +337,7 @@ export default function App() {
                 </div>
                 <div id="stop-btn">
                   <img
-                    src="icon/stop-solid.svg"
+                    src="icons/stop-solid.svg"
                     alt="Stop"
                     title="Stop"
                     id="stop-1"
@@ -349,7 +349,7 @@ export default function App() {
                 </div>
                 <div id="loop-btn">
                   <img
-                    src="icon/repeat-solid.svg"
+                    src="icons/repeat-solid.svg"
                     alt="Loop"
                     title="Loop"
                     id="loop-1"
@@ -386,35 +386,6 @@ export default function App() {
           </div>
         </div>
         <Knob setFXAmount={setFXAmount} midiToFX={midiToFX} />
-      </div>
-      <div className="copyright-and-links">
-        <p style={{ marginLeft: "9px" }}>MIT 2024 © Mark Maxwell</p>
-        <div>
-          <a
-            href="https://github.com/mark-mxwl"
-            target="_blank"
-            style={{ filter: "none" }}
-          >
-            <img
-              src="icon/github.svg"
-              alt="GitHub"
-              title="GitHub"
-              className="link-icons"
-            />
-          </a>
-          <a
-            href="https://markmaxwelldev.com"
-            target="_blank"
-            style={{ filter: "none" }}
-          >
-            <img
-              src="icon/M_nav_icon_1.svg"
-              alt="Website"
-              title="Website"
-              className="link-icons"
-            />
-          </a>
-        </div>
       </div>
     </>
   );

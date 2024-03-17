@@ -114,17 +114,17 @@ export default function Knob(props) {
     <>
       <div className="wrapper">
         <div className="knob">
-          <div className="label label-l">Grit</div>
+          <div className="label label-l-grimy">Grit</div>
           <div className="knob_inner_shadow">
             <div
               ref={knobRef}
-              className="knob_inner"
+              className="knob_inner_grimy"
               title="Drive: double-click to reset!"
             >
-              <div ref={pointerRef} className="knob_inner_pointer"></div>
+              <div ref={pointerRef} className="knob_inner_pointer_grimy"></div>
             </div>
           </div>
-          <div className="label label-r">Grime</div>
+          <div className="label label-r-grimy">Grime</div>
         </div>
         <div
           title="Amount: double-click to reset!"

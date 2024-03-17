@@ -13,7 +13,7 @@
   position: fixed;
   left: 50%;
   transform: translate(-50%, 0);
-  margin: 70px auto 0px auto;
+  margin: 125px auto 0px auto;
   padding: 0 15px 10px 15px;
   background-color: rgba(32, 32, 32, 0.9);
   font-family: "Montserrat", sans-serif;
@@ -89,9 +89,9 @@
   transform: scale(1.2);
 }
 
-.plugin-container {
+.plugin-container-grimy {
   background: linear-gradient(0.35turn, #d12c2c, #ff8585, #d1772c);
-  margin: 20px auto 0px auto;
+  margin: 20px auto 110px auto;
   height: 580px;
   width: 90vw;
   max-width: 750px;
@@ -101,7 +101,7 @@
   border-radius: 50px;
   filter: drop-shadow(0px 18px 9px rgb(27, 27, 27));
 }
-.plugin-container h1 {
+.plugin-container-grimy h1 {
   font-family: "Monoton", sans-serif;
   font-size: 1.7em;
   color: #242424;
@@ -123,14 +123,14 @@
   max-width: "500px";
 }
 
-.plugin-control-bar-L {
+.plugin-control-bar-L-grimy {
   width: 40%;
   padding-left: 5px;
   font-family: "Bungee", sans-serif;
   font-size: 9px;
   color: #242424;
 }
-.plugin-control-bar-L fieldset {
+.plugin-control-bar-L-grimy fieldset {
   border: 1px solid #242424;
   border-radius: 10px;
   width: 100px;
@@ -140,7 +140,7 @@
   line-height: 1.4em;
   user-select: none;
 }
-.plugin-control-bar-L input[type="radio"] {
+.plugin-control-bar-L-grimy input[type="radio"] {
   appearance: none;
   padding: 5px;
   background-color: rgb(205, 205, 205);
@@ -148,11 +148,11 @@
   margin-right: 8px;
   cursor: pointer;
 }
-.plugin-control-bar-L input[type="radio"]:checked {
+.plugin-control-bar-L-grimy input[type="radio"]:checked {
   background-color: #a8d64d;
   box-shadow: 0 0 5px 2px #caf07d;
 }
-.plugin-control-bar-L label {
+.plugin-control-bar-L-grimy label {
   cursor: pointer;
 }
 
@@ -213,7 +213,7 @@
   margin: auto;
 }
 
-.knob_inner {
+.knob_inner_grimy {
   position: relative;
   overflow: hidden;
   width: 100%;
@@ -233,7 +233,7 @@
   filter: drop-shadow(0px 12px 6px rgb(51, 51, 51));
 }
 
-.knob_inner_pointer {
+.knob_inner_pointer_grimy {
   position: absolute;
   width: 24px;
   height: 24px;
@@ -245,11 +245,11 @@
   box-shadow: 0px 0px 2px inset;
 }
 
-.label-l {
+.label-l-grimy {
   left: -35%;
 }
 
-.label-r {
+.label-r-grimy {
   right: -40%;
 }
 

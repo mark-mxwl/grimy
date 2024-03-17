@@ -273,12 +273,12 @@ export default function App() {
           style={{ cursor: "pointer" }}
         />
       </div>
-      <div className="plugin-container">
+      <div className="plugin-container-grimy">
         <h1>GRIMY</h1>
         <DragDrop uploadedAudio={setUploadedAudio} />
         <div className="plugin-drag-drop" style={{ marginTop: "25px" }}>
           <div className="plugin-control-bar">
-            <div className="plugin-control-bar-L">
+            <div className="plugin-control-bar-L-grimy">
               <fieldset>
                 <legend>Mode {">>"}</legend>
                 <div title="Overdrive" style={{ marginBottom: "5px" }}>

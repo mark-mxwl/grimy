@@ -1,9 +1,9 @@
-import React from 'react'
+import React from "react";
 import { useState, useEffect } from "react";
 import Knob from "./components/Knob.jsx";
 import DragDrop from "./components/DragDrop.jsx";
 import InfoModal from "./components/InfoModal.jsx";
-import "./App.css"
+import "./App.css";
 
 const ctx = new AudioContext();
 const reader1 = new FileReader();
@@ -363,20 +363,34 @@ export default function App() {
               <div className="control-bar-filter">
                 {"@"} Filter{" "}
                 <a
+                  title="Filter On"
                   onClick={handleFilterClick}
                   style={{
                     color: !toggleFilter && "gray",
                     filter: !toggleFilter && "none",
+                  }}
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      handleFilterClick();
+                    }
                   }}
                 >
                   On
                 </a>
                 {" | "}
                 <a
+                  title="Filter Off"
                   onClick={handleFilterClick}
                   style={{
                     color: toggleFilter && "gray",
                     filter: toggleFilter && "none",
+                  }}
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      handleFilterClick();
+                    }
                   }}
                 >
                   Off

@@ -108,6 +108,12 @@ export default function Knob(props) {
         }
       })
     );
+
+    currentValueRef.current.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+        e.preventDefault();
+      }
+    });
   }
 
   return (

@@ -125,7 +125,7 @@ export default function Knob(props) {
             <div
               ref={knobRef}
               className="knob_inner_grimy"
-              title="Drive: double-click to reset!"
+              title="Drive: double-click to reset! (MIDI CC# ANY)"
             >
               <div ref={pointerRef} className="knob_inner_pointer_grimy"></div>
             </div>
@@ -133,7 +133,7 @@ export default function Knob(props) {
           <div className="label label-r-grimy">Grime</div>
         </div>
         <div
-          title="Amount: double-click to reset!"
+          title="Visualizer: double-click to reset!"
           ref={currentValueRef}
           className="current-value"
           tabIndex={0}

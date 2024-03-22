@@ -173,9 +173,23 @@ export default function App() {
   }
 
   function handleMidiInput(e) {
+    let buttons = false;
+    // MIDI note CC: 48 (PLAY), 49 (STOP), 50 (LOOP)
+    if (e.data[1] === 48 && e.data[2] >= 1) {
+      playSample();
+      buttons = true;
+    }
+    if (e.data[1] === 49 && e.data[2] >= 1) {
+      stopSample();
+      buttons = true;
+    }
+    if (e.data[1] === 50 && e.data[2] >= 1) {
+      loopSample();
+      buttons = true;
+    }
     setMidiCC(e.data[1]);
-    setMidiValue(e.data[2]);
-    midiToFX = e.data[2] * midiIncrement;
+    !buttons && setMidiValue(e.data[2]);
+    !buttons && (midiToFX = e.data[2] * midiIncrement);
   }
 
   function handleMidiClick() {
@@ -281,7 +295,7 @@ export default function App() {
             <div className="plugin-control-bar-L-grimy">
               <fieldset>
                 <legend>Mode {">>"}</legend>
-                <div title="Overdrive" style={{ marginBottom: "5px" }}>
+                <div title="Overdrive distortion" style={{ marginBottom: "5px" }}>
                   <input
                     type="radio"
                     id="lp"
@@ -293,7 +307,7 @@ export default function App() {
                   <label htmlFor="lp">Dust</label>
                   <img src="icons/dust.svg" className="mode-icons" />
                 </div>
-                <div title="Crunch" style={{ marginBottom: "5px" }}>
+                <div title="Crunch distortion" style={{ marginBottom: "5px" }}>
                   <input
                     type="radio"
                     id="hp"
@@ -304,7 +318,7 @@ export default function App() {
                   <label htmlFor="hp">Dirt</label>
                   <img src="icons/dirt.svg" className="mode-icons" />
                 </div>
-                <div title="Shred">
+                <div title="Shred distortion">
                   <input
                     type="radio"
                     id="bp"
@@ -327,7 +341,7 @@ export default function App() {
                   <img
                     src="icons/play-solid.svg"
                     alt="Play"
-                    title="Play"
+                    title="Play (MIDI CC# 48)"
                     id="play-1"
                     className="plugin-control-buttons"
                     onClick={playSample}
@@ -339,7 +353,7 @@ export default function App() {
                   <img
                     src="icons/stop-solid.svg"
                     alt="Stop"
-                    title="Stop"
+                    title="Stop (MIDI CC# 49)"
                     id="stop-1"
                     className="plugin-control-buttons"
                     onClick={stopSample}
@@ -351,7 +365,7 @@ export default function App() {
                   <img
                     src="icons/repeat-solid.svg"
                     alt="Loop"
-                    title="Loop"
+                    title="Loop (MIDI CC# 50)"
                     id="loop-1"
                     className="plugin-control-buttons"
                     onClick={loopSample}

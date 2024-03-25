@@ -66,14 +66,18 @@ export default function Knob(props) {
   }
 
   function mountKnob() {
-    knobRef.current.addEventListener("mousedown", (e) => {
-      center = e.pageY;
-      mouseIsDown = true;
-    });
+    ["mousedown", "touchstart"].forEach((e) => 
+      knobRef.current.addEventListener(e, (e) => {
+        center = e.pageY;
+        mouseIsDown = true;
+      })
+    );
 
-    document.body.addEventListener("mouseup", (e) => {
-      mouseIsDown = false;
-    });
+    ["mouseup", "touchend"].forEach((e) => 
+      document.body.addEventListener(e, (e) => {
+        mouseIsDown = false;
+      })
+    );
 
     knobRef.current.addEventListener("mouseenter", (e) => {
       if (mouseIsDown) {
@@ -81,15 +85,17 @@ export default function Knob(props) {
       }
     });
 
-    document.body.addEventListener("mousemove", (e) => {
-      mouseIsMoving = true;
-      if (mouseIsDown && mouseIsMoving) {
-        distance = distClamp((center - e.pageY) * 38, 5000, -4900);
-        knobRef.current.style.transform = "rotate(" + distance / 32 + "deg)";
-        currentValueRef.current = distance + 5000;
-        setFXAmount(distance + 5000);
-      }
-    });
+    ["mousemove", "touchmove"].forEach((e) =>
+      document.body.addEventListener(e, (e) => {
+        mouseIsMoving = true;
+        if (mouseIsDown && mouseIsMoving) {
+          distance = distClamp((center - e.pageY) * 38, 5000, -4900);
+          knobRef.current.style.transform = "rotate(" + distance / 32 + "deg)";
+          currentValueRef.current = distance + 5000;
+          setFXAmount(distance + 5000);
+        }
+      })
+    );
 
     knobRef.current.addEventListener("dblclick", (e) => {
       knobRef.current.style.transform = "rotate(0deg)";

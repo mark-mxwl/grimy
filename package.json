@@ -2,7 +2,7 @@
   "name": "grimy",
   "description": "Multimode distortion built with Web Audio.",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "module",
   "scripts": {
     "dev": "vite --port 5001 --strictPort",

@@ -1,5 +1,5 @@
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Knob from "./components/Knob.jsx";
 import DragDrop from "./components/DragDrop.jsx";
 import InfoModal from "./components/InfoModal.jsx";
@@ -26,7 +26,7 @@ let chromeAgent = navigator.userAgent.indexOf("Chrome") > -1;
 
 export default function App() {
   const [uploadedAudio, setUploadedAudio] = useState(null);
-  const [bufferReady, setBufferReady] = useState(false);
+  const audioNodeIsPlaying = useRef(false);
   const [fXAmount, setFXAmount] = useState(5000);
 
   const [midiCC, setMidiCC] = useState(0);
@@ -34,7 +34,6 @@ export default function App() {
   const [useMidi, setUseMidi] = useState(false);
   const [midiDeviceName, setMidiDeviceName] = useState("");
 
-  const [toggle, setToggle] = useState(false);
   const [toggleFilter, setToggleFilter] = useState(true);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -106,28 +105,24 @@ export default function App() {
       reader1.onload = function (e) {
         ctx.decodeAudioData(e.target.result).then(function (buffer) {
           currentBuffer = buffer;
-          setBufferReady(true);
-          setToggle((prev) => (prev = !prev));
         });
       };
     }
   }, [uploadedAudio]);
 
   // SOURCE NODE
-  useEffect(() => {
-    if (bufferReady) {
-      const soundSource = ctx.createBufferSource();
-      soundSource.buffer = currentBuffer;
-      soundSource.connect(distortion);
-      playBufferedSample = () => soundSource.start();
-      stopBufferedSample = () => soundSource.stop();
-      loopBufferedSample = () => {
-        soundSource.loop = true;
-        soundSource.loopEnd = currentBuffer.duration;
-      };
-      bufferLength = Number(soundSource.buffer.duration.toFixed(0) * 1000);
-    }
-  }, [toggle]);
+  function createSourceNode() {
+    const soundSource = ctx.createBufferSource();
+    soundSource.buffer = currentBuffer;
+    soundSource.connect(distortion);
+    playBufferedSample = () => soundSource.start();
+    stopBufferedSample = () => soundSource.stop();
+    loopBufferedSample = () => {
+      soundSource.loop = true;
+      soundSource.loopEnd = currentBuffer.duration;
+    };
+    bufferLength = Number(soundSource.buffer.duration.toFixed(0) * 1000);
+  }
 
   // TOGGLE FILTER
   useEffect(() => {
@@ -154,7 +149,9 @@ export default function App() {
           access.addEventListener("statechange", findMidiDevices);
           const inputs = access.inputs;
           inputs.forEach((input) => {
-            input.addEventListener("midimessage", handleMidiInput);
+            input.onmidimessage = (message) => {
+              handleMidiInput(message);
+            };
           });
         },
         (fail) => {
@@ -175,15 +172,15 @@ export default function App() {
   function handleMidiInput(e) {
     let buttons = false;
     // MIDI note CC: 48 (PLAY), 49 (STOP), 50 (LOOP)
-    if (e.data[1] === 48 && e.data[2] >= 1) {
+    if (e.data[1] === 48 && e.data[2] > 0) {
       playSample();
       buttons = true;
     }
-    if (e.data[1] === 49 && e.data[2] >= 1) {
+    if (e.data[1] === 49 && e.data[2] > 0) {
       stopSample();
       buttons = true;
     }
-    if (e.data[1] === 50 && e.data[2] >= 1) {
+    if (e.data[1] === 50 && e.data[2] > 0) {
       loopSample();
       buttons = true;
     }
@@ -209,25 +206,29 @@ export default function App() {
   }
 
   function playSample() {
-    ctx.resume();
-    playBufferedSample();
-    setTimeout(suspendContext, bufferLength);
+    if (audioNodeIsPlaying.current === true) {
+      stopSample();
+      createSourceNode();
+      playBufferedSample();
+      audioNodeIsPlaying.current = true;
+    }
+    if (audioNodeIsPlaying.current === false) {
+      createSourceNode();
+      playBufferedSample();
+      audioNodeIsPlaying.current = true;
+    }
   }
 
   function stopSample() {
     stopBufferedSample();
-    suspendContext();
+    audioNodeIsPlaying.current = false;
   }
 
   function loopSample() {
-    ctx.resume();
+    createSourceNode();
     playBufferedSample();
     loopBufferedSample();
-  }
-
-  function suspendContext() {
-    ctx.suspend();
-    setToggle((prev) => (prev = !prev));
+    audioNodeIsPlaying.current = true;
   }
 
   return (

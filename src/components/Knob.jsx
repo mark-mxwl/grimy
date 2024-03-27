@@ -156,7 +156,7 @@ export default function Knob(props) {
           tabIndex={0}
           onKeyDown={handleKeyInput}
         >
-          <div className="wavefont-cv">{currentValueRef.current}</div>
+          <div className="wavefont-cv">{currentValueRef.current.toFixed(0)}</div>
         </div>
       </div>
     </>

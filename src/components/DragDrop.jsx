@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FileUploader } from "react-drag-drop-files";
 
 const fileTypes = ["wav", "aiff", "mp3"];
@@ -6,12 +6,14 @@ const fileTypes = ["wav", "aiff", "mp3"];
 function DragDrop(props) {
   const [audioFile, setAudioFile] = useState(null);
   const handleChange = (file) => {
-    setAudioFile(file);
+    sessionStorage.setItem("grimyAudio", file.name);
+    const data = sessionStorage.getItem("grimyAudio");
+    setAudioFile(data);
     props.uploadedAudio(file);
   };
   const [sizeErrorText, setSizeErrorText] = useState("")
-  const fileSizeTooBig = () => setSizeErrorText("File size exceeds 10MB!");
-  const fileNameWithSpaces = audioFile?.name.split("_").join(" ");
+  const fileSizeTooBig = () => setSizeErrorText("File size exceeds 100MB!");
+  const fileNameWithSpaces = audioFile?.split("_").join(" ");
 
   const dStyles = {
     width: "60vw",
@@ -34,12 +36,24 @@ function DragDrop(props) {
     margin: "10px 0 0 0",
   }
 
+  useEffect(() => {
+    if (sessionStorage.getItem("grimyAudio")) {
+      const data = sessionStorage.getItem("grimyAudio");
+      setAudioFile(data);
+    }
+  }, []);
+
+  window.addEventListener("beforeunload", function(e) {
+    sessionStorage.removeItem("grimyAudio");
+  }); 
+
+
   return (
     <>
       <div title="File selector" className="plugin-drag-drop">
         <FileUploader
           handleChange={handleChange}
-          name={audioFile?.name}
+          name={audioFile}
           types={fileTypes}
           multiple={false}
           label="Drop or select audio!"
@@ -56,7 +70,7 @@ function DragDrop(props) {
             ) : (
               <div style={dStyles}>
                 <p style={pStyles}>
-                  {">>"} <b>Drop</b> or <u>select</u> audio // 10MB limit
+                  {">>"} <b>Drop</b> or <u>select</u> audio // 100MB limit
                 </p>
                 <p style={pStyles}>
                   {sizeErrorText}
@@ -65,7 +79,7 @@ function DragDrop(props) {
             )
           }
           array={["wav", "aiff", "mp3"]}
-          maxSize={10}
+          maxSize={100}
           onSizeError={fileSizeTooBig}
         />
       </div>
